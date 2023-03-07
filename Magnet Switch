@@ -1,0 +1,30 @@
+from microbit import *
+import radio
+radio.on()
+radio.config(channel=16)
+
+def alarm_detected(cause):
+    msg = "ALARM" + cause
+    radio.send(msg)
+    display.scroll(cause)
+SENSITIVITY = 100
+
+def check_motion(now, before):
+    diff= abs(now -before)
+    if diff > SENSITIVITY:
+        alarm_detected("Motion")
+
+x_before = accelerometer.get_x()
+y_before = accelerometer.get_y()
+z_before = accelerometer.get_z()
+
+while True:
+    x_now = accelerometer.get_x()
+    y_now = accelerometer.get_y()
+    z_now = accelerometer.get_z()
+    check_motion(x_now, x_before)
+    check_motion(x_now, y_before)
+    check_motion(z_now, z_before)
+    x_before = x_now
+    y_before = y_now
+    sleep(100)
