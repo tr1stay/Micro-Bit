@@ -1,0 +1,21 @@
+from microbit import *
+import radio
+pin0.read_digital()
+radio.on()
+radio.config(channel = 16)
+
+def get_temp(adc_reading, x1, y1, x2, y2):
+    x= adc_reading
+    m = (y2 -y1) /(x2 - x1)
+    b = y1-m*x1
+    y = m*x +b
+    return y
+while True:
+    value = pin0.read_analog()
+    display.scroll(str(value))
+    
+    temp = get_temp(value, 320,32,535,72)
+    temp = round(temp)
+ 
+    radio.send(str(temp))
+    display.scroll(str(temp))
